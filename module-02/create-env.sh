@@ -13,8 +13,7 @@
 # 5 count
 # 6 user-data install-env.sh is provided for you 
 # 7 Tag (use the name: module2-tag)
-##############################################################################
-
+#############################################################################
 # initial if statement to make sure that you pass the commandline variables via
 # the arguments.txt file
 # Fill in the blanks below
