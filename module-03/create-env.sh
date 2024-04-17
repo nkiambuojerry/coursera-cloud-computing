@@ -59,7 +59,16 @@ aws elbv2 create-listener \
 
 echo "Beginning to create and launch instances..."
 # https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ec2/run-instances.html
-aws ec2 run-instances 
+aws ec2 run-instances \
+    --image-id $1 \
+    --instance-type $2 \
+    --count $5 \
+    --key-name $3 \
+    --subnet-id subnet-0842e5e649ea7b4ae \
+    --security-group-ids $4 \
+    --user-data file://$6 \
+    --tag-specifications "ResourceType=instance,Tags=[{Key=module,Value=$7}]"
+    
 
 # Collect Instance IDs
 # https://stackoverflow.com/questions/31744316/aws-cli-filter-or-logic
