@@ -51,7 +51,11 @@ aws elbv2 wait load-balancer-available \
 echo "Load balancer available..."
 # create AWS elbv2 listener for HTTP on port 80
 #https://awscli.amazonaws.com/v2/documentation/api/latest/reference/elbv2/create-listener.html
-aws elbv2 create-listener 
+aws elbv2 create-listener \
+    --load-balancer-arn arn:aws:elasticloadbalancing:us-east-1:813820435365:loadbalancer/app/njm/aa652b14606ef9d6 \
+    --protocol HTTP \
+    --port 80 \
+    --default-actions Type=forward,TargetGroupArn=arn:aws:elasticloadbalancing:us-east-1:813820435365:targetgroup/njm/93a6569a448b94de
 
 echo "Beginning to create and launch instances..."
 # https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ec2/run-instances.html
