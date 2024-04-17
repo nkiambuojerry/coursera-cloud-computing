@@ -46,7 +46,8 @@ echo $ELBARN
 # AWS elbv2 wait for load-balancer available
 # https://awscli.amazonaws.com/v2/documentation/api/latest/reference/elbv2/wait/load-balancer-available.html
 echo "Waiting for load balancer to be available..."
-aws elbv2 wait load-balancer-available 
+aws elbv2 wait load-balancer-available \
+    --load-balancer-arns arn:aws:elasticloadbalancing:us-east-1:813820435365:loadbalancer/app/njm/aa652b14606ef9d6
 echo "Load balancer available..."
 # create AWS elbv2 listener for HTTP on port 80
 #https://awscli.amazonaws.com/v2/documentation/api/latest/reference/elbv2/create-listener.html
