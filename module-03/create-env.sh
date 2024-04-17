@@ -40,7 +40,7 @@ TARGETARN=arn:aws:elasticloadbalancing:us-east-1:813820435365:targetgroup/njm/93
 
 echo "Creating ELBv2 Elastic Load Balancer..."
 #https://awscli.amazonaws.com/v2/documentation/api/2.0.34/reference/elbv2/create-load-balancer.html
-ELBARN=
+ELBARN=arn:aws:elasticloadbalancing:us-east-1:813820435365:loadbalancer/app/njm/aa652b14606ef9d6
 echo $ELBARN
 
 # AWS elbv2 wait for load-balancer available
