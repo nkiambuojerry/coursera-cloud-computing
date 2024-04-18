@@ -87,7 +87,7 @@ if [ "$INSTANCEIDS" != "" ]
     # Assignes the value of $EC2IDS and places each element (seperated by a space) into an array element
     INSTANCEIDSARRAY=($INSTANCEIDS)
     for INSTANCEID in ${INSTANCEIDSARRAY[@]};
-    do
+      do
       aws elbv2 register-targets \
     --target-group-arn arn:aws:elasticloadbalancing:us-east-1:813820435365:targetgroup/njm/93a6569a448b94de \
     --targets Id=$INSTANCEIDS 
