@@ -98,7 +98,7 @@ fi
 
 # Retreive ELBv2 URL via aws elbv2 describe-load-balancers --query and print it to the screen
 #https://awscli.amazonaws.com/v2/documentation/api/latest/reference/elbv2/describe-load-balancers.html
-URL=$(aws elbv2 describe-load-balancers 
+URL=$(aws elbv2 describe-load-balancers --load-balancer-arns arn:aws:elasticloadbalancing:us-east-1:813820435365:loadbalancer/app/njm/aa652b14606ef9d6) 
 echo $URL
 
 # end of outer fi - based on arguments.txt content
