@@ -89,8 +89,8 @@ if [ "$INSTANCEIDS" != "" ]
     for INSTANCEID in ${INSTANCEIDSARRAY[@]};
       do
       aws elbv2 register-targets \
-    --target-group-arn arn:aws:elasticloadbalancing:us-east-1:813820435365:targetgroup/njm/8f225e9c1fc461f3 \
-    --targets Id=$INSTANCEIDS Id=$INSTANCEIDS Id=$INSTANCEIDS 
+    --target-group-arn $TARGETARN \
+    --targets Id=$INSTANCEIDS
       done
   else
     echo "There are no running or pending instances in $INSTANCEIDS to wait for..."
