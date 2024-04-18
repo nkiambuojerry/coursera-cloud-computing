@@ -36,26 +36,26 @@ echo $SUBNET2B
 
 echo 'Creating the TARGET GROUP and storing the ARN in $TARGETARN...'
 # https://awscli.amazonaws.com/v2/documentation/api/2.0.34/reference/elbv2/create-target-group.html
-TARGETARN=arn:aws:elasticloadbalancing:us-east-1:813820435365:targetgroup/njm/93a6569a448b94de
+TARGETARN=arn:aws:elasticloadbalancing:us-east-1:813820435365:targetgroup/njm/8f225e9c1fc461f3
 
 echo "Creating ELBv2 Elastic Load Balancer..."
 #https://awscli.amazonaws.com/v2/documentation/api/2.0.34/reference/elbv2/create-load-balancer.html
-ELBARN=arn:aws:elasticloadbalancing:us-east-1:813820435365:loadbalancer/app/njm/aa652b14606ef9d6
+ELBARN=arn:aws:elasticloadbalancing:us-east-1:813820435365:loadbalancer/app/njm/b6715172601da3e6
 echo $ELBARN
 
 # AWS elbv2 wait for load-balancer available
 # https://awscli.amazonaws.com/v2/documentation/api/latest/reference/elbv2/wait/load-balancer-available.html
 echo "Waiting for load balancer to be available..."
 aws elbv2 wait load-balancer-available \
-    --load-balancer-arns arn:aws:elasticloadbalancing:us-east-1:813820435365:loadbalancer/app/njm/aa652b14606ef9d6
+    --load-balancer-arns arn:aws:elasticloadbalancing:us-east-1:813820435365:loadbalancer/app/njm/b6715172601da3e6
 echo "Load balancer available..."
 # create AWS elbv2 listener for HTTP on port 80
 #https://awscli.amazonaws.com/v2/documentation/api/latest/reference/elbv2/create-listener.html
 aws elbv2 create-listener \
-    --load-balancer-arn arn:aws:elasticloadbalancing:us-east-1:813820435365:loadbalancer/app/njm/aa652b14606ef9d6 \
+    --load-balancer-arn arn:aws:elasticloadbalancing:us-east-1:813820435365:loadbalancer/app/njm/b6715172601da3e6 \
     --protocol HTTP \
     --port 80 \
-    --default-actions Type=forward,TargetGroupArn=arn:aws:elasticloadbalancing:us-east-1:813820435365:targetgroup/njm/93a6569a448b94de
+    --default-actions Type=forward,TargetGroupArn=arn:aws:elasticloadbalancing:us-east-1:813820435365:targetgroup/njm/8f225e9c1fc461f3
 
 echo "Beginning to create and launch instances..."
 # https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ec2/run-instances.html
@@ -89,7 +89,7 @@ if [ "$INSTANCEIDS" != "" ]
     for INSTANCEID in ${INSTANCEIDSARRAY[@]};
       do
       aws elbv2 register-targets \
-    --target-group-arn arn:aws:elasticloadbalancing:us-east-1:813820435365:targetgroup/njm/93a6569a448b94de \
+    --target-group-arn arn:aws:elasticloadbalancing:us-east-1:813820435365:targetgroup/njm/8f225e9c1fc461f3 \
     --targets Id=$INSTANCEIDS 
       done
   else
@@ -98,7 +98,7 @@ fi
 
 # Retreive ELBv2 URL via aws elbv2 describe-load-balancers --query and print it to the screen
 #https://awscli.amazonaws.com/v2/documentation/api/latest/reference/elbv2/describe-load-balancers.html
-URL=$(aws elbv2 describe-load-balancers --load-balancer-arns arn:aws:elasticloadbalancing:us-east-1:813820435365:loadbalancer/app/njm/aa652b14606ef9d6) 
+URL=$(aws elbv2 describe-load-balancers --load-balancer-arns arn:aws:elasticloadbalancing:us-east-1:813820435365:loadbalancer/app/njm/b6715172601da3e6) 
 echo $URL
 
 # end of outer fi - based on arguments.txt content
