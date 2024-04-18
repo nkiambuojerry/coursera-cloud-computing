@@ -20,7 +20,7 @@ fi
 
 echo "Finding TARGETARN..."
 # https://awscli.amazonaws.com/v2/documentation/api/2.0.34/reference/elbv2/describe-target-groups.html
-TARGETARN=
+TARGETARN=arn:aws:elasticloadbalancing:us-east-1:813820435365:targetgroup/njm/8f225e9c1fc461f3
 echo $TARGETARN
 
 if [ "$INSTANCEIDS" != "" ]
@@ -54,7 +54,7 @@ fi
 
 echo "Looking up ELB ARN..."
 # https://awscli.amazonaws.com/v2/documentation/api/2.0.34/reference/elbv2/describe-load-balancers.html
-ELBARN=
+ELBARN=arn:aws:elasticloadbalancing:us-east-1:813820435365:loadbalancer/app/njm/b6715172601da3e6
 echo $ELBARN
 
 # Collect ListenerARN
