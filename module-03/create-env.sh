@@ -74,6 +74,7 @@ aws ec2 run-instances \
 # https://stackoverflow.com/questions/31744316/aws-cli-filter-or-logic
 INSTANCEIDS=$(aws ec2 describe-instances --output=text --query 'Reservations[*].Instances[*].InstanceId' --filter "Name=instance-state-name,Values=running,pending")
 
+
 #https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ec2/wait/instance-running.html
 echo "Waiting until instances are in the RUNNING state..."
 echo $INSTANCEIDS
@@ -90,7 +91,7 @@ if [ "$INSTANCEIDS" != "" ]
       do
       aws elbv2 register-targets \
     --target-group-arn $TARGETARN \
-    --targets Id=$INSTANCEIDS
+    --targets Id=$IDS
       done
   else
     echo "There are no running or pending instances in $INSTANCEIDS to wait for..."
