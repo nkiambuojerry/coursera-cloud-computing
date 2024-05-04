@@ -64,7 +64,7 @@ aws ec2 create-launch-template \
 echo "Launch Template created..."
 
 # Retreive the Launch Template ID using a --query
-LAUNCHTEMPLATEID=lt-0cccf5ac62d2c0cc8
+LAUNCHTEMPLATEID=lt-037041cd9780ffe82
 
 echo 'Creating the TARGET GROUP and storing the ARN in $TARGETARN'
 # https://awscli.amazonaws.com/v2/documentation/api/2.0.34/reference/elbv2/create-target-group.html
@@ -100,7 +100,7 @@ echo 'Creating Auto Scaling Group...'
 # https://awscli.amazonaws.com/v2/documentation/api/latest/reference/autoscaling/create-auto-scaling-group.html
 aws autoscaling create-auto-scaling-group \
     --auto-scaling-group-name asg-njm \
-    --launch-template LaunchTemplateId=lt-0cccf5ac62d2c0cc8 \
+    --launch-template LaunchTemplateId=lt-037041cd9780ffe82 \
     --min-size 2 \
     --max-size 5 \
     --vpc-zone-identifier "subnet-0842e5e649ea7b4ae,subnet-09644c14dda43bc8d,subnet-09a1af5df2c78d767" 
@@ -110,7 +110,7 @@ echo 'Waiting for Auto Scaling Group to spin up EC2 instances and attach them to
 # https://docs.aws.amazon.com/cli/latest/reference/elbv2/wait/target-in-service.html
 aws elbv2 wait target-in-service \
  --target-group-arn arn:aws:elasticloadbalancing:us-east-1:813820435365:targetgroup/tg-njm/e35d4fc7c22dc4b3 \
- --targets Id=i-066e2b16f8c23f2ae,Port=80 Id=i-017dc490cad5a2238,Port=80
+ --targets Id=i-066e2b16f8c23f2ae,Port=80 Id=i-017dc490cad5a2238,Port=80 i-0dcfffa5d9b53985f,Port=80
 echo "Targets attached to Auto Scaling Group..."
 
 # Collect Instance IDs
