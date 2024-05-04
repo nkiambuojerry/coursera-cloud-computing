@@ -68,12 +68,12 @@ LAUNCHTEMPLATEID=lt-0cccf5ac62d2c0cc8
 
 echo 'Creating the TARGET GROUP and storing the ARN in $TARGETARN'
 # https://awscli.amazonaws.com/v2/documentation/api/2.0.34/reference/elbv2/create-target-group.html
-TARGETARN=
+TARGETARN=arn:aws:elasticloadbalancing:us-east-1:813820435365:targetgroup/tg-njm/e35d4fc7c22dc4b3
 echo $TARGETARN
 
 echo "Creating ELBv2 Elastic Load Balancer..."
 #https://awscli.amazonaws.com/v2/documentation/api/2.0.34/reference/elbv2/create-load-balancer.html
-ELBARN=
+ELBARN=arn:aws:elasticloadbalancing:us-east-1:813820435365:loadbalancer/app/njm-elb/acabc84867f6add2
 echo $ELBARN
 
 # Decrease the deregistration timeout (deregisters faster than the default 300 second timeout per instance)
