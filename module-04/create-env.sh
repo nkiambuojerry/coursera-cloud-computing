@@ -83,22 +83,33 @@ aws elbv2 modify-target-group-attributes --target-group-arn $TARGETARN --attribu
 # AWS elbv2 wait for load-balancer available
 # https://awscli.amazonaws.com/v2/documentation/api/latest/reference/elbv2/wait/load-balancer-available.html
 echo "Waiting for load balancer to be available..."
-aws elbv2 wait load-balancer-available
+aws elbv2 wait load-balancer-available \
+    --load-balancer-arns arn:aws:elasticloadbalancing:us-east-1:813820435365:loadbalancer/app/njm-elb/acabc84867f6add2
 echo "Load balancer available..."
 # create AWS elbv2 listener for HTTP on port 80
 #https://awscli.amazonaws.com/v2/documentation/api/latest/reference/elbv2/create-listener.html
-aws elbv2 create-listener 
+aws elbv2 create-listener \
+    --load-balancer-arn arn:aws:elasticloadbalancing:us-east-1:813820435365:loadbalancer/app/njm-elb/acabc84867f6add2 \
+    --protocol HTTP \
+    --port 80 \
+    --default-actions Type=forward,TargetGroupArn=arn:aws:elasticloadbalancing:us-east-1:813820435365:targetgroup/tg-njm/e35d4fc7c22dc4b3 
 
 echo 'Creating Auto Scaling Group...'
 # Create Autoscaling group ASG - needs to come after Target Group is created
 # Create autoscaling group
 # https://awscli.amazonaws.com/v2/documentation/api/latest/reference/autoscaling/create-auto-scaling-group.html
-aws autoscaling create-auto-scaling-group 
+aws autoscaling create-auto-scaling-group \
+    --auto-scaling-group-name asg-njm \
+    --launch-template LaunchTemplateId=lt-0cccf5ac62d2c0cc8 \
+    --min-size $14 \
+    --max-size $15 \
+    --vpc-zone-identifier "subnet-0842e5e649ea7b4ae,subnet-09644c14dda43bc8d,subnet-09a1af5df2c78d767" 
 
 echo 'Waiting for Auto Scaling Group to spin up EC2 instances and attach them to the TargetARN...'
 # Create waiter for registering targets
 # https://docs.aws.amazon.com/cli/latest/reference/elbv2/wait/target-in-service.html
 aws elbv2 wait target-in-service
+--target-group-arn arn:aws:elasticloadbalancing:us-east-1:813820435365:targetgroup/tg-njm/e35d4fc7c22dc4b3
 echo "Targets attached to Auto Scaling Group..."
 
 # Collect Instance IDs
@@ -107,7 +118,7 @@ INSTANCEIDS=$(aws ec2 describe-instances --output=text --query 'Reservations[*].
 
 if [ "$INSTANCEIDS" != "" ]
   then
-    aws ec2 wait instance-running
+    aws ec2 wait instance-running --instance-ids $INSTANCEIDS
     echo "Finished launching instances..."
   else
     echo 'There are no running or pending values in $INSTANCEIDS to wait for...'
@@ -116,7 +127,7 @@ fi
 
 # Retreive ELBv2 URL via aws elbv2 describe-load-balancers --query and print it to the screen
 #https://awscli.amazonaws.com/v2/documentation/api/latest/reference/elbv2/describe-load-balancers.html
-URL=
+URL=$(aws elbv2 describe-load-balancers --load-balancer-arns arn:aws:elasticloadbalancing:us-east-1:813820435365:loadbalancer/app/njm-elb/acabc84867f6add2) 
 echo $URL
 
 # end of outer fi - based on arguments.txt content
