@@ -58,7 +58,7 @@ echo $SUBNET2B
 # https://awscli.amazonaws.com/v2/documentation/api/2.0.33/reference/ec2/create-launch-template.html
 echo "Creating the AutoScalingGroup Launch Template..."
 aws ec2 create-launch-template \
-    --launch-template-name lt-njm \
+    --launch-template-name $12 \
     --version-description AutoScalingVersion1 \
     --launch-template-data '{ "NetworkInterfaces": [ { "DeviceIndex": 0, "AssociatePublicIpAddress": true, "Groups": [ "sg-0cde1af268aac1d1f" ], "SubnetId": "subnet-0842e5e649ea7b4ae", "DeleteOnTermination": true } ], "ImageId": "ami-04b70fa74e45c3917", "InstanceType": "t2.micro", "KeyName": "coursera-key", "UserData": "IyEvYmluL2Jhc2gNCg0KIyBTYW1wbGUgY29kZSB0byBpbnN0YWxsIE5naW54IHdlYnNlcnZlcg0KDQpzdWRvIGFwdCB1cGRhdGUNCnN1ZG8gYXB0IGluc3RhbGwgLXkgbmdpbngNCg0Kc3VkbyBzeXN0ZW1jdGwgZW5hYmxlIC0tbm93IG5naW54DQo=", "Placement": { "AvailabilityZone": "us-east-1a" },"TagSpecifications":[{"ResourceType":"instance","Tags":[{"Key":"module","Value": "module04-tag" }]}] }' --region us-east-1
 echo "Launch Template created..."
@@ -101,8 +101,8 @@ echo 'Creating Auto Scaling Group...'
 aws autoscaling create-auto-scaling-group \
     --auto-scaling-group-name asg-njm \
     --launch-template LaunchTemplateId=lt-0cccf5ac62d2c0cc8 \
-    --min-size $14 \
-    --max-size $15 \
+    --min-size 2 \
+    --max-size 5 \
     --vpc-zone-identifier "subnet-0842e5e649ea7b4ae,subnet-09644c14dda43bc8d,subnet-09a1af5df2c78d767" 
 
 echo 'Waiting for Auto Scaling Group to spin up EC2 instances and attach them to the TargetARN...'
