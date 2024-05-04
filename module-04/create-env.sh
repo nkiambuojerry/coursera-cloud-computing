@@ -57,11 +57,14 @@ echo $SUBNET2B
 # Create AWS EC2 Launch Template
 # https://awscli.amazonaws.com/v2/documentation/api/2.0.33/reference/ec2/create-launch-template.html
 echo "Creating the AutoScalingGroup Launch Template..."
-aws ec2 create-launch-template 
+aws ec2 create-launch-template \
+    --launch-template-name lt-njm \
+    --version-description AutoScalingVersion1 \
+    --launch-template-data '{ "NetworkInterfaces": [ { "DeviceIndex": 0, "AssociatePublicIpAddress": true, "Groups": [ "sg-0cde1af268aac1d1f" ], "SubnetId": "subnet-0842e5e649ea7b4ae", "DeleteOnTermination": true } ], "ImageId": "ami-04b70fa74e45c3917", "InstanceType": "t2.micro", "KeyName": "coursera-key", "UserData": "IyEvYmluL2Jhc2gNCg0KIyBTYW1wbGUgY29kZSB0byBpbnN0YWxsIE5naW54IHdlYnNlcnZlcg0KDQpzdWRvIGFwdCB1cGRhdGUNCnN1ZG8gYXB0IGluc3RhbGwgLXkgbmdpbngNCg0Kc3VkbyBzeXN0ZW1jdGwgZW5hYmxlIC0tbm93IG5naW54DQo=", "Placement": { "AvailabilityZone": "us-east-1a" },"TagSpecifications":[{"ResourceType":"instance","Tags":[{"Key":"module","Value": "module04-tag" }]}] }' --region us-east-1
 echo "Launch Template created..."
 
 # Retreive the Launch Template ID using a --query
-LAUNCHTEMPLATEID=
+LAUNCHTEMPLATEID=lt-0cccf5ac62d2c0cc8
 
 echo 'Creating the TARGET GROUP and storing the ARN in $TARGETARN'
 # https://awscli.amazonaws.com/v2/documentation/api/2.0.34/reference/elbv2/create-target-group.html
