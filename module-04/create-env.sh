@@ -49,10 +49,10 @@ VPCID=$(aws ec2 describe-vpcs --filters "Name=is-default,Values=true" --query "V
 echo $VPCID
 
 echo "Finding and storing the subnet IDs for defined in arguments.txt Availability Zone 1 and 2..."
-SUBNET2A=$(aws ec2 describe-subnets --output=text --query='Subnets[*].SubnetId' --filter "Name=availability-zone,Values=${10}")
-SUBNET2B=$(aws ec2 describe-subnets --output=text --query='Subnets[*].SubnetId' --filter "Name=availability-zone,Values=${11}")
-echo $SUBNET2A
-echo $SUBNET2B
+SUBNET1A=$(aws ec2 describe-subnets --output=text --query='Subnets[*].SubnetId' --filter "Name=availability-zone,Values=${10}")
+SUBNET1B=$(aws ec2 describe-subnets --output=text --query='Subnets[*].SubnetId' --filter "Name=availability-zone,Values=${11}")
+echo $SUBNET1A
+echo $SUBNET1B
 
 # Create AWS EC2 Launch Template
 # https://awscli.amazonaws.com/v2/documentation/api/2.0.33/reference/ec2/create-launch-template.html
