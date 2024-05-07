@@ -153,7 +153,7 @@ resource "aws_launch_template" "main" {
   key_name                             = var.key-name
 
 
-# First EBS volume
+# Creating and attaching Second EBS volume after the initial AMI specified Volume
   block_device_mappings {
     device_name = "/dev/sdf"  
     ebs {
@@ -163,19 +163,9 @@ resource "aws_launch_template" "main" {
     }
   }
 
-# Second EBS volume
-  block_device_mappings {
-    device_name = "/dev/sdg"
-    ebs {
-      volume_size           = 20
-      delete_on_termination = true
-      volume_type           = "gp2"
-    }
-  }
-
 # Third EBS volume
   block_device_mappings {
-    device_name = "/dev/sdh"
+    device_name = "/dev/sdg"
     ebs {
       volume_size           = 20
       delete_on_termination = true
