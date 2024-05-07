@@ -9,10 +9,6 @@
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/vpc
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/vpcs
 ##############################################################################
-provider "aws" {
-  region = "us-east-1"
-}
-
 data "aws_vpc" "main" {
   default = true
 }
