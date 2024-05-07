@@ -16,6 +16,16 @@ data "aws_vpc" "main" {
 output "vpcs" {
   value = data.aws_vpc.main.id
 }
+
+resource "aws_security_group_rule" "allow_http" {
+  type            = "ingress"
+  from_port       = 80
+  to_port         = 80
+  protocol        = "tcp"
+  security_group_id = var.vpc_security_group_ids
+  cidr_blocks     = ["0.0.0.0/0"]
+}
+
 ##############################################################################
 # https://developer.hashicorp.com/terraform/tutorials/configuration-language/data-source
 ##############################################################################
