@@ -134,7 +134,7 @@ resource "aws_lb_listener" "main" {
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/launch_template
 ##############################################################################
 resource "aws_launch_template" "main" {
-  image_id                             = var.lt-name
+  image_id                             = var.imageid
   instance_initiated_shutdown_behavior = "terminate"
   instance_type                        = var.instance-type
   key_name                             = var.key-name
