@@ -85,7 +85,7 @@ resource "aws_lb" "lb" {
   security_groups    = [var.vpc_security_group_ids]
   subnets = [data.aws_subnets.subneta.ids[0], data.aws_subnets.subnetb.ids[0]]
   
-  enable_deletion_protection = true
+  enable_deletion_protection = false
 
   tags = {
     Environment = var.module-tag
