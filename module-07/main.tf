@@ -208,7 +208,7 @@ resource "aws_autoscaling_group" "main" {
 # Creating 3 EBS Volumes
 resource "aws_ebs_volume" "main" {
   count             = 3  
-  availability_zone = data.aws_instance.available.availability_zone
+  availability_zone = var.az
   size              = 10  
 
   tags = {
@@ -221,7 +221,7 @@ resource "aws_volume_attachment" "ebs_att" {
   count       = 3  # Attach each of the 3 created volumes
   device_name = "/dev/sda1"
   volume_id   = aws_ebs_volume.main.id
-  instance_id = aws_instance.example.id
+  instance_id = aws_launch_template.main.id
 }
 
 ##############################################################################
