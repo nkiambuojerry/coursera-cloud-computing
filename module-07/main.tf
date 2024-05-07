@@ -152,6 +152,42 @@ resource "aws_launch_template" "main" {
   instance_type                        = var.instance-type
   key_name                             = var.key-name
 
+
+# First EBS volume
+  block_device_mappings {
+    device_name = "/dev/sdf"  
+    ebs {
+      volume_size           = 20  
+      delete_on_termination = true  
+      volume_type           = "gp2"  
+    }
+  }
+
+# Second EBS volume
+  block_device_mappings {
+    device_name = "/dev/sdg"
+    ebs {
+      volume_size           = 20
+      delete_on_termination = true
+      volume_type           = "gp2"
+    }
+  }
+
+# Third EBS volume
+  block_device_mappings {
+    device_name = "/dev/sdh"
+    ebs {
+      volume_size           = 20
+      delete_on_termination = true
+      volume_type           = "gp2"
+    }
+  }
+
+  tags = {
+    Name = var.module-tag
+  }
+
+
   monitoring {
     enabled = true
   }
