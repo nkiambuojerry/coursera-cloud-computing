@@ -28,3 +28,4 @@ variable "desired" { default = 3 }
 variable "module-tag" {}
 variable "raw-s3-bucket" {}
 variable "finished-s3-bucket" {}
+variable "dynamodb-table-name" {}

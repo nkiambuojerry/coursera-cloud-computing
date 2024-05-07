@@ -9,6 +9,10 @@
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/vpc
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/vpcs
 ##############################################################################
+provider "aws" {
+  region = "us-east-1"
+}
+
 data "aws_vpc" "main" {
   default = true
 }
@@ -88,7 +92,8 @@ resource "aws_lb" "lb" {
   enable_deletion_protection = false
 
   tags = {
-    Environment = var.module-tag
+    "Name" = var.elb-name
+    "module7-tag" = var.module-tag
   }
 }
 
@@ -101,7 +106,7 @@ output "url" {
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_target_group
 ##############################################################################
 
-resource "aws_lb_target_group" "alb-lb-tg" {
+resource "aws_lb_target_group" "main" {
   # depends_on is effectively a waiter -- it forces this resource to wait until the listed
   # resource is ready
   depends_on  = [aws_lb.lb]
@@ -116,14 +121,14 @@ resource "aws_lb_target_group" "alb-lb-tg" {
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_listener
 ##############################################################################
 
-resource "aws_lb_listener" "front_end" {
+resource "aws_lb_listener" "main" {
   load_balancer_arn = aws_lb.lb.arn
   port              = "80"
   protocol          = "HTTP"
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.alb-lb-tg.arn
+    target_group_arn = aws_lb_target_group.main.arn
   }
 }
 
@@ -132,8 +137,8 @@ resource "aws_lb_listener" "front_end" {
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/launch_template
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/launch_template
 ##############################################################################
-resource "aws_launch_template" "mp1-lt" {
-  image_id                             = var.imageid
+resource "aws_launch_template" "main" {
+  image_id                             = var.lt-name
   instance_initiated_shutdown_behavior = "terminate"
   instance_type                        = var.instance-type
   key_name                             = var.key-name
@@ -146,6 +151,7 @@ resource "aws_launch_template" "mp1-lt" {
   }
 
   network_interfaces {
+  associate_public_ip_address = true
   subnet_id = data.aws_subnets.subneta.ids[0]
   security_groups = [var.vpc_security_group_ids]
   }
@@ -153,7 +159,8 @@ resource "aws_launch_template" "mp1-lt" {
   tag_specifications {
     resource_type = "instance"
     tags = {
-      Name = var.module-tag
+      Name = var.lt-name
+      "module7-tag" = var.module-tag
     }
   }
   user_data = filebase64("./install-env.sh")
@@ -164,9 +171,9 @@ resource "aws_launch_template" "mp1-lt" {
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/autoscaling_group
 ##############################################################################
 
-resource "aws_autoscaling_group" "bar" {
+resource "aws_autoscaling_group" "main" {
   name                      = var.asg-name
-  depends_on                = [aws_launch_template.mp1-lt]
+  depends_on                = [aws_launch_template.main]
   desired_capacity          = var.desired
   max_size                  = var.max
   min_size                  = var.min
@@ -176,13 +183,13 @@ resource "aws_autoscaling_group" "bar" {
   vpc_zone_identifier       = [data.aws_subnets.subneta.ids[0], data.aws_subnets.subnetb.ids[0]]
 
   tag {
-    key                 = "assessment"
+    key                 = "module7-tag"
     value               = var.module-tag
     propagate_at_launch = true
   }
 
   launch_template {
-    id      = aws_launch_template.mp1-lt.id
+    id      = aws_launch_template.main.id
     version = "$Latest"
   }
 }
@@ -192,17 +199,17 @@ resource "aws_autoscaling_group" "bar" {
 ##############################################################################
 # Create a new ALB Target Group attachment
 
-resource "aws_autoscaling_attachment" "example" {
+resource "aws_autoscaling_attachment" "main" {
   # Wait for lb to be running before attaching to asg
   depends_on  = [aws_lb.lb]
-  autoscaling_group_name = aws_autoscaling_group.bar.id
-  lb_target_group_arn = aws_lb_target_group.alb-lb-tg.arn
+  autoscaling_group_name = aws_autoscaling_group.main.id
+  lb_target_group_arn    = aws_lb_target_group.main.arn
 }
 
 output "alb-lb-tg-arn" {
-  value = aws_lb_target_group.alb-lb-tg.arn
+  value = aws_lb_target_group.main.arn
 }
 
 output "alb-lb-tg-id" {
-  value = aws_lb_target_group.alb-lb-tg.id
+  value = aws_lb_target_group.main.id
 }
