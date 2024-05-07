@@ -1,0 +1,12 @@
+# These are your values that would be in arguments.txt
+imageid                = ""
+instance-type          = ""
+key-name               = ""
+vpc_security_group_ids = "sg-03586ee2b9ed862f7"
+cnt                    = ""
+install-env-file       = ""
+elb-name               = "njm-elb"
+tg-name                = ""
+asg-name               = ""
+lt-name                = ""
+module-tag             = "module7-tag"
