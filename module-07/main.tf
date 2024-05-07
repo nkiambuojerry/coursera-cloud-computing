@@ -126,3 +126,83 @@ resource "aws_lb_listener" "front_end" {
     target_group_arn = aws_lb_target_group.alb-lb-tg.arn
   }
 }
+
+##############################################################################
+# Create launch template
+# https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/launch_template
+# https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/launch_template
+##############################################################################
+resource "aws_launch_template" "mp1-lt" {
+  image_id                             = var.imageid
+  instance_initiated_shutdown_behavior = "terminate"
+  instance_type                        = var.instance-type
+  key_name                             = var.key-name
+
+  monitoring {
+    enabled = true
+  }
+  placement {
+    availability_zone = data.aws_availability_zones.primary.id
+  }
+
+  network_interfaces {
+  subnet_id = data.aws_subnets.subneta.ids[0]
+  security_groups = [var.vpc_security_group_ids]
+  }
+  
+  tag_specifications {
+    resource_type = "instance"
+    tags = {
+      Name = var.module-tag
+    }
+  }
+  user_data = filebase64("./install-env.sh")
+}
+
+##############################################################################
+# Create autoscaling group
+# https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/autoscaling_group
+##############################################################################
+
+resource "aws_autoscaling_group" "bar" {
+  name                      = var.asg-name
+  depends_on                = [aws_launch_template.mp1-lt]
+  desired_capacity          = var.desired
+  max_size                  = var.max
+  min_size                  = var.min
+  health_check_grace_period = 300
+  health_check_type         = "ELB"
+  target_group_arns         = [aws_lb_target_group.alb-lb-tg.arn]
+  vpc_zone_identifier       = [data.aws_subnets.subneta.ids[0], data.aws_subnets.subnetb.ids[0]]
+
+  tag {
+    key                 = "assessment"
+    value               = var.module-tag
+    propagate_at_launch = true
+  }
+
+  launch_template {
+    id      = aws_launch_template.mp1-lt.id
+    version = "$Latest"
+  }
+}
+
+##############################################################################
+# https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/autoscaling_attachment
+##############################################################################
+# Create a new ALB Target Group attachment
+
+resource "aws_autoscaling_attachment" "example" {
+  # Wait for lb to be running before attaching to asg
+  depends_on  = [aws_lb.lb]
+  autoscaling_group_name = var.asg-name
+  lb_target_group_arn    = target_group_arn
+}
+
+output "alb-lb-tg-arn" {
+  value = aws_lb_target_group.alb-lb-tg.arn
+}
+
+output "alb-lb-tg-id" {
+  value = aws_lb_target_group.alb-lb-tg.id
+}
