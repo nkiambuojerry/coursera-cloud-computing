@@ -220,7 +220,7 @@ resource "aws_ebs_volume" "main" {
 resource "aws_volume_attachment" "ebs_att" {
   count       = 3  # Attach each of the 3 created volumes
   device_name = "/dev/sda1"
-  volume_id   = aws_ebs_volume.main.id
+  volume_id   = aws_ebs_volume.main[count.index].id
   instance_id = aws_launch_template.main.id
 }
 
