@@ -2,7 +2,7 @@
 imageid                = ""
 instance-type          = ""
 key-name               = ""
-vpc_security_group_ids = "sg-03586ee2b9ed862f7"
+vpc_security_group_ids = "sg-0f36ecf047fc97f2f"
 cnt                    = ""
 install-env-file       = ""
 elb-name               = "njm-elb"
