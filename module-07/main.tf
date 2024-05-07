@@ -175,7 +175,7 @@ resource "aws_autoscaling_group" "main" {
   min_size                  = var.min
   health_check_grace_period = 300
   health_check_type         = "ELB"
-  target_group_arns         = [aws_lb_target_group.alb-lb-tg.arn]
+  target_group_arns         = [aws_lb_target_group.main.arn]
   vpc_zone_identifier       = [data.aws_subnets.subneta.ids[0], data.aws_subnets.subnetb.ids[0]]
 
   tag {
@@ -197,7 +197,7 @@ resource "aws_autoscaling_group" "main" {
 
 resource "aws_autoscaling_attachment" "main" {
   # Wait for lb to be running before attaching to asg
-  depends_on  = [aws_lb.lb]
+  depends_on  = [aws_lb_listener.main]
   autoscaling_group_name = aws_autoscaling_group.main.id
   lb_target_group_arn    = aws_lb_target_group.main.arn
 }
