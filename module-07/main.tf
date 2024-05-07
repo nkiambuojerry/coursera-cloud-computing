@@ -208,7 +208,7 @@ resource "aws_autoscaling_group" "main" {
 # Creating 3 EBS Volumes
 resource "aws_ebs_volume" "main" {
   count             = 3  
-  availability_zone = aws_instance.available.availability_zone
+  availability_zone = data.aws_instance.available.availability_zone
   size              = 10  
 
   tags = {
