@@ -17,15 +17,6 @@ output "vpcs" {
   value = data.aws_vpc.main.id
 }
 
-resource "aws_security_group_rule" "allow_http" {
-  type            = "ingress"
-  from_port       = 80
-  to_port         = 80
-  protocol        = "tcp"
-  security_group_id = var.vpc_security_group_ids
-  cidr_blocks     = ["0.0.0.0/0"]
-}
-
 ##############################################################################
 # https://developer.hashicorp.com/terraform/tutorials/configuration-language/data-source
 ##############################################################################
@@ -83,6 +74,18 @@ data "aws_subnets" "subnetc" {
 
 output "subnetid-1a" {
   value = [data.aws_subnets.subneta.ids]
+}
+
+########################################################
+# Security Group Rule for ALB 
+########################################################
+resource "aws_security_group_rule" "allow_http" {
+  type            = "ingress"
+  from_port       = 80
+  to_port         = 80
+  protocol        = "tcp"
+  security_group_id = var.vpc_security_group_ids
+  cidr_blocks     = ["0.0.0.0/0"]
 }
 
 ##############################################################################
@@ -152,6 +155,7 @@ resource "aws_launch_template" "main" {
   monitoring {
     enabled = true
   }
+
   placement {
     availability_zone = data.aws_availability_zones.primary.id
   }
@@ -171,6 +175,7 @@ resource "aws_launch_template" "main" {
   }
   user_data = filebase64("./install-env.sh")
 }
+
 
 ##############################################################################
 # Create autoscaling group
@@ -198,6 +203,25 @@ resource "aws_autoscaling_group" "main" {
     id      = aws_launch_template.main.id
     version = "$Latest"
   }
+}
+
+# Creating 3 EBS Volumes
+resource "aws_ebs_volume" "main" {
+  count             = 3  
+  availability_zone = aws_instance.available.availability_zone
+  size              = 10  
+
+  tags = {
+    Name = "module7-tag"
+  }
+}
+
+# Attaching the created EBS Volumes
+resource "aws_volume_attachment" "ebs_att" {
+  count       = 3  # Attach each of the 3 created volumes
+  device_name = "/dev/sda1"
+  volume_id   = aws_ebs_volume.main.id
+  instance_id = aws_instance.example.id
 }
 
 ##############################################################################
