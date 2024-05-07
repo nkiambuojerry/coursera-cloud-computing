@@ -97,3 +97,32 @@ output "url" {
   value = aws_lb.lb.dns_name
 }
 
+##############################################################################
+# https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_target_group
+##############################################################################
+
+resource "aws_lb_target_group" "alb-lb-tg" {
+  # depends_on is effectively a waiter -- it forces this resource to wait until the listed
+  # resource is ready
+  depends_on  = [aws_lb.lb]
+  name        = var.tg-name
+  target_type = "instance"
+  port        = 80
+  protocol    = "HTTP"
+  vpc_id      = data.aws_vpc.main.id
+}
+
+##############################################################################
+# https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_listener
+##############################################################################
+
+resource "aws_lb_listener" "front_end" {
+  load_balancer_arn = aws_lb.lb.arn
+  port              = "80"
+  protocol          = "HTTP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.alb-lb-tg.arn
+  }
+}
