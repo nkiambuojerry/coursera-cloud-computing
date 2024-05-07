@@ -205,25 +205,6 @@ resource "aws_autoscaling_group" "main" {
   }
 }
 
-# Creating 3 EBS Volumes
-resource "aws_ebs_volume" "main" {
-  count             = 3  
-  availability_zone = data.aws_availability_zones.available
-  size              = 10  
-
-  tags = {
-    Name = "module7-tag"
-  }
-}
-
-# Attaching the created EBS Volumes
-resource "aws_volume_attachment" "ebs_att" {
-  count       = 3  # Attach each of the 3 created volumes
-  device_name = "/dev/sda1"
-  volume_id   = aws_ebs_volume.main[count.index].id
-  instance_id = aws_launch_template.main.id
-}
-
 ##############################################################################
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/autoscaling_attachment
 ##############################################################################
