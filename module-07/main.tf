@@ -208,7 +208,7 @@ resource "aws_autoscaling_group" "main" {
 # Creating 3 EBS Volumes
 resource "aws_ebs_volume" "main" {
   count             = 3  
-  availability_zone = "us-east-1"
+  availability_zone = data.aws_availability_zones
   size              = 10  
 
   tags = {
