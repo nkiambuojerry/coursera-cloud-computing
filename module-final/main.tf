@@ -274,6 +274,7 @@ resource "aws_dynamodb_table" "mp2-dynamodb-table" {
 
   tags = {
     Name        = var.module-tag
+    key         = var.module-tag
   }
 }
 
