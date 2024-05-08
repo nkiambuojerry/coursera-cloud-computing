@@ -155,7 +155,7 @@ resource "aws_launch_template" "main" {
   block_device_mappings {
     device_name = "/dev/sdf"  
     ebs {
-      volume_size           = 20  
+      volume_size           = var.ebs-size  
       delete_on_termination = true  
       volume_type           = "gp2"  
     }
@@ -165,7 +165,7 @@ resource "aws_launch_template" "main" {
   block_device_mappings {
     device_name = "/dev/sdg"
     ebs {
-      volume_size           = 20
+      volume_size           = var.ebs-size
       delete_on_termination = true
       volume_type           = "gp2"
     }
